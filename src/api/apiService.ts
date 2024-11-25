@@ -4,7 +4,7 @@ import { LoginDataType } from "@/interface";
 
 const HOST = config.host;
 
-export async function authLogin(data: LoginDataType) {
+export async function postAuthLogin(data: LoginDataType) {
   const request = {
     url: `${HOST}/api/auth/login`,
     method: "POST",

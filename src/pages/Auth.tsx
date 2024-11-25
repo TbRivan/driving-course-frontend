@@ -1,11 +1,26 @@
+import { postAuthLogin } from "@/api/apiService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore, AuthStoreType } from "@/store/auth-store";
 import { LoaderPinwheel } from "lucide-react";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import { UserStoreType, UserType, useUserStore } from "@/store/user-store";
 
 function Auth() {
-  const { email, password, setEmail, setPassword }: AuthStoreType =
-    useAuthStore();
+  const {
+    email,
+    password,
+    isLogin,
+    setEmail,
+    setPassword,
+    setIsLogin,
+  }: AuthStoreType = useAuthStore();
+  const { setUser }: UserStoreType = useUserStore();
+  const navigate = useNavigate();
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = (e.target as HTMLInputElement).value;
@@ -17,7 +32,33 @@ function Auth() {
     setPassword(value);
   }
 
-  function handleSubmitLogin() {}
+  async function handleSubmitLogin() {
+    const data = {
+      email,
+      password,
+    };
+    const response = await postAuthLogin(data);
+
+    if (response.error) {
+      return toast(response.message);
+    }
+
+    const decodeUser: UserType = jwtDecode(response.data);
+    setUser(decodeUser);
+
+    Cookies.set("token", response.data, { expires: 1 });
+    setIsLogin(true);
+    toast(response.message);
+
+    return navigate("/dashboard");
+  }
+
+  useEffect(() => {
+    if (isLogin) {
+      navigate("/dashboard");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLogin]);
 
   return (
     <div className="flex h-screen p-4 ">
@@ -46,6 +87,7 @@ function Auth() {
               <Input
                 className="mb-4"
                 placeholder="example@mail.com"
+                type="email"
                 value={email}
                 onChange={handleEmailChange}
               />
@@ -60,6 +102,7 @@ function Auth() {
                 className="mb-4 w-full"
                 variant="default"
                 onClick={handleSubmitLogin}
+                disabled={email.length < 8 || password.length < 8}
               >
                 Login
               </Button>
