@@ -32,11 +32,18 @@ function Auth() {
     setPassword(value);
   }
 
+  function handleKeyEnter(event: any) {
+    if (email.length >= 8 && password.length >= 8 && event.key === "Enter") {
+      handleSubmitLogin();
+    }
+  }
+
   async function handleSubmitLogin() {
     const data = {
       email,
       password,
     };
+
     const response = await postAuthLogin(data);
 
     if (response.error) {
@@ -49,6 +56,9 @@ function Auth() {
     Cookies.set("token", response.data, { expires: 1 });
     setIsLogin(true);
     toast(response.message);
+
+    setEmail("");
+    setPassword("");
 
     return navigate("/dashboard");
   }
@@ -71,7 +81,9 @@ function Auth() {
       >
         <div className="ml-5 mt-5 flex ">
           <LoaderPinwheel color="white" size={40} />
-          <h1 className="ml-2 text-3xl font-bold text-white">Wheel Wise</h1>
+          <h1 className="bungee-regular ml-2 text-3xl font-bold text-white">
+            Wheel Wise
+          </h1>
         </div>
       </div>
       <div className="w-full lg:w-1/2 p-8">
@@ -90,6 +102,7 @@ function Auth() {
                 type="email"
                 value={email}
                 onChange={handleEmailChange}
+                onKeyDown={(e) => handleKeyEnter(e)}
               />
               <Input
                 className="mb-4"
@@ -97,6 +110,7 @@ function Auth() {
                 type="password"
                 value={password}
                 onChange={handlePasswordChange}
+                onKeyDown={(e) => handleKeyEnter(e)}
               />
               <Button
                 className="mb-4 w-full"

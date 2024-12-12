@@ -11,9 +11,13 @@ function SidebarHeaderCustom() {
     <SidebarHeader>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton>
-            <LoaderPinwheel size={40} />
-            <span className="ml-2 text-2xl font-semibold">Wheel Wise</span>
+          <SidebarMenuButton size="lg">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <LoaderPinwheel className="size-4" />
+            </div>
+            <span className="bungee-regular ml-2 text-2xl font-semibold">
+              Wheel Wise
+            </span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

@@ -12,6 +12,7 @@ export interface AuthStoreType extends LoginDataType {
   setToken: (value: string) => void;
   setIsLogin: (value: boolean) => void;
   checkTokenFromCookie: () => void;
+  logoutAccount: () => void;
 }
 
 export const useAuthStore = create<AuthStoreType>((set) => ({
@@ -48,5 +49,21 @@ export const useAuthStore = create<AuthStoreType>((set) => ({
 
     setUser(user);
     set(() => ({ token: cookiesToken, isLogin: login }));
+  },
+  logoutAccount: () => {
+    const setUser = useUserStore.getState().setUser;
+
+    const user: UserType = {
+      id: 0,
+      name: "",
+      email: "",
+      role: 0,
+    };
+
+    Cookies.remove("token");
+    Cookies.remove("sidebar:state");
+
+    setUser(user);
+    set(() => ({ token: "", isLogin: false }));
   },
 }));

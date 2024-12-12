@@ -11,43 +11,70 @@ import { useUserStore } from "@/store/user-store";
 import { BookCheck, Home, ListOrdered, Package, Users } from "lucide-react";
 
 // Menu items.
-const items = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: Home,
-  },
-  {
-    title: "User",
-    url: "#",
-    icon: Users,
-  },
-  {
-    title: "Order",
-    url: "#",
-    icon: ListOrdered,
-  },
-  {
-    title: "Package",
-    url: "#",
-    icon: Package,
-  },
-  {
-    title: "Course",
-    url: "#",
-    icon: BookCheck,
-  },
-];
+const menusContent = {
+  admin: [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: Home,
+    },
+    {
+      title: "User",
+      url: "#",
+      icon: Users,
+    },
+    {
+      title: "Order",
+      url: "#",
+      icon: ListOrdered,
+    },
+    {
+      title: "Package",
+      url: "#",
+      icon: Package,
+    },
+    {
+      title: "Course",
+      url: "#",
+      icon: BookCheck,
+    },
+  ],
+  client: [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: Home,
+    },
+    {
+      title: "Order",
+      url: "#",
+      icon: ListOrdered,
+    },
+    {
+      title: "Course",
+      url: "#",
+      icon: BookCheck,
+    },
+  ],
+};
 
 function SidebarContentCustom() {
   const { user } = useUserStore();
+
+  let menuContent;
+  if (user?.role === 1) {
+    menuContent = menusContent.admin;
+  } else if (user?.role === 2) {
+    menuContent = menusContent.client;
+  }
+
   return (
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupLabel>General</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
-            {items.map((item) => (
+            {menuContent?.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <a href={item.url}>
